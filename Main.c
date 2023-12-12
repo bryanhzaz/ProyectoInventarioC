@@ -4,6 +4,18 @@ Author: Bryan Hernandez A.
 Delivery date: 8 January 2024*/
 #include <stdio.h>
 
+
+//Declaration of Function to add users
+void agregarUsuarios();
+// Estructura para crear un array y añadirla al archivo *Empleados
+struct AgregarEmpleado
+{
+    char nombre[50];
+    char ID[5];  // Cambié el tipo a char para almacenar como cadena
+    int ID_entero;  // Nuevo campo para almacenar el ID como un entero
+    char contraseña[50];
+};
+
 //Main:
 int main()
 {
@@ -24,7 +36,7 @@ int main()
     {
     case 1:
         //Function to add users is developed
-        printf("Agregar funcion de usuarios");
+        agregarUsuarios();
         break;
     case 2:
         //Function to add products is developed
@@ -45,8 +57,111 @@ int main()
     default:
         printf("Opción no válida, intentelo de nuevo.");
         break;
+    
     }
 
-    } while (opcion != 5);
+    if (opcion ==5)
+    {
+        break;
+    }
     
+    } while (1);
+    
+    return 0;
+}
+
+//Create Admin, employe to manage the inventory
+void agregarUsuarios()
+{
+    //Modo escritura y lectura para administrador, considerar cambiar binario a texto
+    FILE *Administrador = fopen("Administrador.bin", "a+");
+    if (Administrador == NULL)
+    {
+        perror("Error al abrir Administrador.bin");
+        return 1;
+    }
+    
+    FILE *Empleados = fopen("Empleados.bin", "ab");
+    if (Empleados == NULL)
+    {
+        perror("Error al abrir Empleados.bin");
+        return 1;
+    }
+    
+    int menuUsuario;
+    //pedir cantidad de empleados a ingresar
+    int cantidadEmpleados;
+    int ultimoID = 0;
+
+    struct AgregarEmpleado empleados[9999];
+
+    do
+    {
+        printf("\nIngrese usuario a crear\n");
+        printf("1. Administrador (Solo es posible crear un administrador)\n");
+        printf("2. Empleado\n");
+        scanf("%d", &menuUsuario);
+
+        switch (menuUsuario)
+        {
+        case 1:
+        /*verificar si el archivo está vacío con fseek, hacemos uso del puntero *Administrador
+        no nos movemos con el parametro 0 y nos situamos al final del archivo con SEEK_END*/
+            fseek(Administrador, 0, SEEK_END);
+        /*ftell() en C se utiliza para averiguar 
+        la posición del puntero del archivo en el archivo con respecto al inicio del archivo.
+        en este caso con ftell si la posicion es 0, entonces no hay nada en el archivo, por lo que
+        es el primer y único Admin*/
+            long sizeFile = ftell(Administrador);
+            if (sizeFile == 0)
+            {
+                //Añadir Admin al archivo
+                fprintf(Administrador,"Admin ");
+
+                char contraseña[50];
+                printf("Escribe la contraseña del usuario Admin\n");
+                scanf("%s", contraseña);
+                fprintf(Administrador,"%s",contraseña);
+                printf("Administrador agregado con éxito.");
+            }
+            else
+            {
+                printf("Ya existe un Administrador en el sistema");
+            }
+            
+            break;
+        case 2:
+            printf("Ingresa la cantidad de empleados a agregar\n");
+            scanf("%d",&cantidadEmpleados);
+
+            for (int i = 0; i < cantidadEmpleados; i++)
+            {
+                //incrementar el ultimo ID
+                ultimoID++;
+                //llenar con ceros a la izquierda los ID
+                sprintf(empleados[i].ID, "%04d", ultimoID);
+                //Asignar el ultimoID a empleados 
+                empleados[i].ID_entero = ultimoID;
+
+                printf("Ingrese el nombre del empleado sin espacios %d\n",ultimoID);
+                scanf("%s",empleados[i].nombre);
+
+                printf("Ingrese la contraseña del empleado %d\n",ultimoID);
+                scanf("%s",empleados[i].contraseña);
+            }
+            //empleados, puntero que contiene los datos a escribir
+            // sizeof tamaño de bytes por cada empleado ingresado
+            //cantidadEmpleados, cuantos elementos se desean escribir
+            //Empleados, el archivo fijado con un puntero al que se desea escribir
+            fwrite(empleados, sizeof(struct AgregarEmpleado), cantidadEmpleados, Empleados);
+            break;
+        
+        default:
+        printf("Opcion no valida, ingrese de nuevo.");
+            break;
+        }
+    } while (1);
+    
+    fclose(Administrador);
+    fclose(Empleados);
 }
