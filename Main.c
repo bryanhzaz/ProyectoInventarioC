@@ -3,7 +3,7 @@ Allow users add products, update stock y generate inventory reports.
 Author: Bryan Hernandez A.
 Delivery date: 8 January 2024*/
 #include <stdio.h>
-
+#include <string.h>
 
 //Declaration of Function to add users
 void agregarUsuarios();
@@ -89,47 +89,48 @@ void agregarUsuarios()
     }
     
     int menuUsuario;
-    //pedir cantidad de empleados a ingresar
+    //pedir cantidad de empleados a ingresar, variables para utilizar en Agregar Empleado
     int cantidadEmpleados;
     int ultimoID = 0;
 
     struct AgregarEmpleado empleados[9999];
+
+    //Case 3
+    char validarContraseña[50];
+    char compararContraseñas[50];
 
     do
     {
         printf("\nIngrese usuario a crear\n");
         printf("1. Administrador (Solo es posible crear un administrador)\n");
         printf("2. Empleado\n");
+        printf("3. Eliminar admin\n");
+        printf("4. Eliminar empleado\n");
         scanf("%d", &menuUsuario);
 
         switch (menuUsuario)
         {
         case 1:
-        /*verificar si el archivo está vacío con fseek, hacemos uso del puntero *Administrador
-        no nos movemos con el parametro 0 y nos situamos al final del archivo con SEEK_END*/
+            // Verificar si el archivo está vacío con fseek
             fseek(Administrador, 0, SEEK_END);
-        /*ftell() en C se utiliza para averiguar 
-        la posición del puntero del archivo en el archivo con respecto al inicio del archivo.
-        en este caso con ftell si la posicion es 0, entonces no hay nada en el archivo, por lo que
-        es el primer y único Admin*/
+    
+            // Obtener el tamaño del archivo
             long sizeFile = ftell(Administrador);
-            if (sizeFile == 0)
-            {
-                //Añadir Admin al archivo
-                fprintf(Administrador,"Admin ");
-
+    
+            // Verificar si el archivo está vacío
+            if (sizeFile == 0) {
+                // Añadir Admin al archivo
                 char contraseña[50];
-                printf("Escribe la contraseña del usuario Admin\n");
+                printf("Escribe la contraseña del usuario Admin\n:");
                 scanf("%s", contraseña);
-                fprintf(Administrador,"%s",contraseña);
+                fprintf(Administrador, "Admin %s\n", contraseña);
                 printf("Administrador agregado con éxito.");
-            }
-            else
-            {
+            } else {
                 printf("Ya existe un Administrador en el sistema");
             }
-            
-            break;
+    
+        break;
+
         case 2:
             printf("Ingresa la cantidad de empleados a agregar\n");
             scanf("%d",&cantidadEmpleados);
@@ -155,10 +156,39 @@ void agregarUsuarios()
             //Empleados, el archivo fijado con un puntero al que se desea escribir
             fwrite(empleados, sizeof(struct AgregarEmpleado), cantidadEmpleados, Empleados);
             break;
-        
-        default:
-        printf("Opcion no valida, ingrese de nuevo.");
-            break;
+
+            /*Now develops the two last options of this menu to eliminate admin or employee*/
+        case 3:
+            printf("Ingrese la contraseña para validar y eliminar usuario Administrador\n:");
+            scanf("%s", validarContraseña);
+
+            // Abrimos el archivo para lectura y escritura
+            FILE *adminArchivo = fopen("Administrador.bin", "r+");
+            if (adminArchivo == NULL) {
+                perror("Error al abrir Administrador.bin");
+                return 1;
+            }
+
+            // Leemos el administrador existente
+            char usuario[50], contraseña[50];
+            fscanf(adminArchivo, "%s %s", usuario, contraseña);
+
+            // Comparamos la contraseña
+            if (strcmp(validarContraseña, contraseña) == 0) {
+                // Volvemos al inicio del archivo
+                fseek(adminArchivo, 0, SEEK_SET);
+
+                // Truncamos el archivo para borrar su contenido
+                ftruncate(fileno(adminArchivo), 0);
+
+                printf("\nAdministrador eliminado con éxito\n");
+            } else {
+                printf("\nContraseña incorrecta, vuelva a ingresarla\n");
+            }
+
+            fclose(adminArchivo);
+        break;
+
         }
     } while (1);
     
