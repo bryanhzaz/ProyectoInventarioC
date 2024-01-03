@@ -7,12 +7,12 @@ Delivery date: 8 January 2024*/
 
 //Declaration of Function to add users
 void agregarUsuarios();
-// Estructura para crear un array y añadirla al archivo *Empleados
+// Array to add to the pointer *Empleados
 struct AgregarEmpleado
 {
     char nombre[50];
-    char ID[5];  // Cambié el tipo a char para almacenar como cadena
-    int ID_entero;  // Nuevo campo para almacenar el ID como un entero
+    char ID[5];  // Change the ID numerical to manage as string
+    int ID_entero;  // Field to storage the string ID in int
     char contraseña[50];
 };
 
@@ -28,7 +28,7 @@ int main()
     printf("2. Agregar Productos\n");
     printf("3. Actualizar stock\n");
     printf("4. Reporte de inventario\n");
-    printf("5. Salir del menú\n");
+    printf("5. Salir del programa\n");
     printf("Seleccione una opcion\n:");
     scanf("%d", &opcion);
 
@@ -73,23 +73,23 @@ int main()
 //Create Admin, employe to manage the inventory
 void agregarUsuarios()
 {
-    //Modo escritura y lectura para administrador, considerar cambiar binario a texto
-    FILE *Administrador = fopen("Administrador.bin", "a+");
+    //The pointer *Administrador will open in protocol open and append to update in each aperture 
+    FILE *Administrador = fopen("Administrador.txt", "a+");
     if (Administrador == NULL)
     {
-        perror("Error al abrir Administrador.bin");
+        perror("Error al abrir Administrador.txt");
         return 1;
     }
-    
-    FILE *Empleados = fopen("Empleados.bin", "ab");
+    //To open the file in writing mode and add to the end of the file, in adittion, if doesnt exist, creates the file   
+    FILE *Empleados = fopen("Empleados.txt", "a");
     if (Empleados == NULL)
     {
-        perror("Error al abrir Empleados.bin");
+        perror("Error al abrir Empleados.txt");
         return 1;
     }
     
     int menuUsuario;
-    //pedir cantidad de empleados a ingresar, variables para utilizar en Agregar Empleado
+    //variables creates to use in AgregarEmpleado
     int cantidadEmpleados;
     int ultimoID = 0;
 
@@ -106,20 +106,21 @@ void agregarUsuarios()
         printf("2. Empleado\n");
         printf("3. Eliminar admin\n");
         printf("4. Eliminar empleado\n");
+        printf("5. Regresar al menu principal\n:");
         scanf("%d", &menuUsuario);
 
         switch (menuUsuario)
         {
         case 1:
-            // Verificar si el archivo está vacío con fseek
-            fseek(Administrador, 0, SEEK_END);
+            // Verify if fseek is empty
+             fseek(Administrador, 0, SEEK_END);
     
-            // Obtener el tamaño del archivo
+            // Obtain the size of file
             long sizeFile = ftell(Administrador);
     
-            // Verificar si el archivo está vacío
+            // Verify if file is empty
             if (sizeFile == 0) {
-                // Añadir Admin al archivo
+                // Add Admin to file
                 char contraseña[50];
                 printf("Escribe la contraseña del usuario Admin\n:");
                 scanf("%s", contraseña);
@@ -128,6 +129,7 @@ void agregarUsuarios()
             } else {
                 printf("Ya existe un Administrador en el sistema");
             }
+            fclose(Administrador);
     
         break;
 
@@ -137,11 +139,11 @@ void agregarUsuarios()
 
             for (int i = 0; i < cantidadEmpleados; i++)
             {
-                //incrementar el ultimo ID
+                //increase the last ID
                 ultimoID++;
-                //llenar con ceros a la izquierda los ID
+                //fill with 0 to the left 
                 sprintf(empleados[i].ID, "%04d", ultimoID);
-                //Asignar el ultimoID a empleados 
+                //Add the last ID to empleado 
                 empleados[i].ID_entero = ultimoID;
 
                 printf("Ingrese el nombre del empleado sin espacios %d\n",ultimoID);
@@ -150,10 +152,10 @@ void agregarUsuarios()
                 printf("Ingrese la contraseña del empleado %d\n",ultimoID);
                 scanf("%s",empleados[i].contraseña);
             }
-            //empleados, puntero que contiene los datos a escribir
-            // sizeof tamaño de bytes por cada empleado ingresado
-            //cantidadEmpleados, cuantos elementos se desean escribir
-            //Empleados, el archivo fijado con un puntero al que se desea escribir
+            //empleados, pointer that contents the data
+            // sizeof size of bytes for each empleado
+            //cantidadEmpleados, elemnts to write
+            //Empleados, the file set with a pointer to which you want to write
             fwrite(empleados, sizeof(struct AgregarEmpleado), cantidadEmpleados, Empleados);
             break;
 
@@ -162,23 +164,23 @@ void agregarUsuarios()
             printf("Ingrese la contraseña para validar y eliminar usuario Administrador\n:");
             scanf("%s", validarContraseña);
 
-            // Abrimos el archivo para lectura y escritura
-            FILE *adminArchivo = fopen("Administrador.bin", "r+");
+            // Open the file to write and read
+            FILE *adminArchivo = fopen("Administrador.txt", "r+");
             if (adminArchivo == NULL) {
-                perror("Error al abrir Administrador.bin");
+                perror("Error al abrir Administrador.txt");
                 return 1;
             }
 
-            // Leemos el administrador existente
+            // Read the admin actual
             char usuario[50], contraseña[50];
             fscanf(adminArchivo, "%s %s", usuario, contraseña);
 
-            // Comparamos la contraseña
+            // Compare the password
             if (strcmp(validarContraseña, contraseña) == 0) {
-                // Volvemos al inicio del archivo
+                // We go back to the  start of file
                 fseek(adminArchivo, 0, SEEK_SET);
 
-                // Truncamos el archivo para borrar su contenido
+                // Truncate the file to delete the content (truncate the file to the size of the file that is 0)
                 ftruncate(fileno(adminArchivo), 0);
 
                 printf("\nAdministrador eliminado con éxito\n");
@@ -187,11 +189,15 @@ void agregarUsuarios()
             }
 
             fclose(adminArchivo);
+            fclose(Administrador);
         break;
-
+        /*case 4:*/
+        case 5:
+            printf("Regresando a menu principal");
+            return;
         }
     } while (1);
-    
+    //Release the memory and close the files
     fclose(Administrador);
     fclose(Empleados);
 }
