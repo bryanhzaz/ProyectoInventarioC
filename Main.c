@@ -197,7 +197,7 @@ void agregarUsuarios()
             return;
         }
     } while (1);
-    //Release the memory and close the files
+    //Release the memory and close the files, without errors
     fclose(Administrador);
     fclose(Empleados);
 }
