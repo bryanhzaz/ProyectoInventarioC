@@ -87,6 +87,9 @@ void agregarUsuarios()
         perror("Error al abrir Empleados.txt");
         return 1;
     }
+
+    // Abre el archivo de empleados en modo lectura para el caso 4
+    FILE *EmpleadosLista = fopen("Empleados.txt", "rb");
     
     int menuUsuario;
     //variables creates to use in AgregarEmpleado
@@ -105,8 +108,9 @@ void agregarUsuarios()
         printf("1. Administrador (Solo es posible crear un administrador)\n");
         printf("2. Empleado\n");
         printf("3. Eliminar admin\n");
-        printf("4. Eliminar empleado\n");
-        printf("5. Regresar al menu principal\n:");
+        printf("4. Ver listados de empleados\n");
+        printf("5. Eliminar empleado\n");
+        printf("6. Regresar al menu principal\n:");
         scanf("%d", &menuUsuario);
 
         switch (menuUsuario)
@@ -158,6 +162,8 @@ void agregarUsuarios()
             //Empleados, the file set with a pointer to which you want to write
             fwrite(empleados, sizeof(struct AgregarEmpleado), cantidadEmpleados, Empleados);
             break;
+            //Close the file of Empleados to update in each change of menu option
+            fclose(Empleados);
 
             /*Now develops the two last options of this menu to eliminate admin or employee*/
         case 3:
@@ -191,13 +197,52 @@ void agregarUsuarios()
             fclose(adminArchivo);
             fclose(Administrador);
         break;
-        /*case 4:*/
-        case 5:
+        case 4:
+        printf("\nPara ver el listado de empleados verifique que es el admin\n");
+        printf("\nIngrese su contraseña\n:");
+        scanf("%s", validarContraseña);
+        FILE *listaEmpleadosAdmin = fopen("Administrador.txt", "r+");
+        if (listaEmpleadosAdmin == NULL)
+        {
+            perror("Error al abrir Administrador.txt");
+            return 1;
+        }
+        // Read the admin actual
+        char usuario2[50], contraseña2[50];
+        fscanf(listaEmpleadosAdmin, "%s %s", usuario2, contraseña2);
+        if (strcmp(validarContraseña, contraseña2) == 0)
+        {
+            if (EmpleadosLista == NULL)
+            {
+                perror("Error al abrir Empleados.txt");
+                return;
+            }
+
+            // Declara una estructura temporal para leer cada empleado
+            struct AgregarEmpleado empleado;
+
+            // Lee y muestra la información de cada empleado hasta el final del archivo
+            printf("\nListado de empleados:\n");
+            while (fread(&empleado, sizeof(struct AgregarEmpleado), 1, EmpleadosLista) == 1)
+            {
+                printf("ID: %s | Nombre: %s | Contraseña: %s\n", empleado.ID, empleado.nombre, empleado.contraseña);
+            }
+
+            // Cierra el archivo de empleados
+            fclose(EmpleadosLista);
+        }
+        else
+        {
+            printf("Error de contraseña");
+        }
+        
+            break;
+        case 6:
             printf("Regresando a menu principal");
             return;
         }
     } while (1);
-    //Release the memory and close the files, without errors
+    //Release the memory and close the files, without errors on the files
     fclose(Administrador);
     fclose(Empleados);
 }
