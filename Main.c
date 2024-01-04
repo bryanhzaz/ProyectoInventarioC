@@ -4,6 +4,9 @@ Author: Bryan Hernandez A.
 Delivery date: 8 January 2024*/
 #include <stdio.h>
 #include <string.h>
+//To eliminate the error with ftruncate
+#include <unistd.h>
+
 
 //Declaration of Function to add users
 void agregarUsuarios();
@@ -102,6 +105,8 @@ void agregarUsuarios()
     char validarContraseña[50];
     char compararContraseñas[50];
 
+
+
     do
     {
         printf("\nIngrese usuario a crear\n");
@@ -109,7 +114,7 @@ void agregarUsuarios()
         printf("2. Empleado\n");
         printf("3. Eliminar admin\n");
         printf("4. Ver listados de empleados\n");
-        printf("5. Eliminar empleado\n");
+        printf("5. Eliminar empleados\n");
         printf("6. Regresar al menu principal\n:");
         scanf("%d", &menuUsuario);
 
@@ -197,46 +202,77 @@ void agregarUsuarios()
             fclose(adminArchivo);
             fclose(Administrador);
         break;
+
         case 4:
-        printf("\nPara ver el listado de empleados verifique que es el admin\n");
-        printf("\nIngrese su contraseña\n:");
-        scanf("%s", validarContraseña);
-        FILE *listaEmpleadosAdmin = fopen("Administrador.txt", "r+");
-        if (listaEmpleadosAdmin == NULL)
-        {
-            perror("Error al abrir Administrador.txt");
-            return 1;
-        }
-        // Read the admin actual
-        char usuario2[50], contraseña2[50];
-        fscanf(listaEmpleadosAdmin, "%s %s", usuario2, contraseña2);
-        if (strcmp(validarContraseña, contraseña2) == 0)
-        {
-            if (EmpleadosLista == NULL)
+            printf("\nPara ver el listado de empleados verifique que es el admin\n");
+            printf("\nIngrese su contraseña\n:");
+            scanf("%s", validarContraseña);
+            FILE *listaEmpleadosAdmin = fopen("Administrador.txt", "r+");
+            if (listaEmpleadosAdmin == NULL)
             {
-                perror("Error al abrir Empleados.txt");
-                return;
+                perror("Error al abrir Administrador.txt");
+                return 1;
             }
-
-            // Declara una estructura temporal para leer cada empleado
-            struct AgregarEmpleado empleado;
-
-            // Lee y muestra la información de cada empleado hasta el final del archivo
-            printf("\nListado de empleados:\n");
-            while (fread(&empleado, sizeof(struct AgregarEmpleado), 1, EmpleadosLista) == 1)
+            // Read the admin actual
+            char usuario2[50], contraseña2[50];
+            fscanf(listaEmpleadosAdmin, "%s %s", usuario2, contraseña2);
+            if (strcmp(validarContraseña, contraseña2) == 0)
             {
-                printf("ID: %s | Nombre: %s | Contraseña: %s\n", empleado.ID, empleado.nombre, empleado.contraseña);
-            }
+                if (EmpleadosLista == NULL)
+                {
+                    perror("Error al abrir Empleados.txt");
+                    return;
+                }
 
-            // Cierra el archivo de empleados
-            fclose(EmpleadosLista);
-        }
-        else
-        {
-            printf("Error de contraseña");
-        }
+                // Declara una estructura temporal para leer cada empleado
+                struct AgregarEmpleado empleado;
+
+                // Lee y muestra la información de cada empleado hasta el final del archivo
+                printf("\nListado de empleados:\n");
+                while (fread(&empleado, sizeof(struct AgregarEmpleado), 1, EmpleadosLista) == 1)
+                {
+                    printf("ID: %s | Nombre: %s | Contraseña: %s\n", empleado.ID, empleado.nombre, empleado.contraseña);
+                }
+
+                // Cierra el archivo de empleados
+                fclose(EmpleadosLista);
+            }
+            else
+            {
+                printf("Error de contraseña");
+            }
         
             break;
+
+        case 5:
+            printf("¿Está seguro de que desea eliminar todos los empleados? (Esta acción no se puede deshacer)\n");
+            printf("1. Sí\n");
+            printf("2. No\n");
+    
+            int confirmacion;
+            scanf("%d", &confirmacion);
+
+            if (confirmacion == 1)
+            {
+                //Opens in binary to delete all data
+                FILE *busquedaEmpleados = fopen("Empleados.txt", "wb");
+                if (busquedaEmpleados == NULL)
+                {
+                    perror("Error al abrir Empleados.txt");
+                    return 1;
+                }
+
+                fclose(busquedaEmpleados);
+                printf("Todos los empleados han sido eliminados con éxito.\n");
+            }
+            else
+            {
+                printf("Operación cancelada. No se han realizado cambios en la lista de empleados.\n");
+            }
+
+            break;
+
+
         case 6:
             printf("Regresando a menu principal");
             return;
