@@ -38,7 +38,7 @@ int main()
     switch (opcion)
     {
     case 1:
-        //Function to add users is developed
+        //Function to add users is ready 
         agregarUsuarios();
         break;
     case 2:
