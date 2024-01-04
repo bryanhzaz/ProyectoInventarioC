@@ -10,6 +10,11 @@ Delivery date: 8 January 2024*/
 
 //Declaration of Function to add users
 void agregarUsuarios();
+
+//Functions to fix the bug of ID's
+int leerUltimoID();
+void escribirUltimoID(int ultimoID);
+
 // Array to add to the pointer *Empleados
 struct AgregarEmpleado
 {
@@ -146,6 +151,9 @@ void agregarUsuarios()
             printf("Ingresa la cantidad de empleados a agregar\n");
             scanf("%d",&cantidadEmpleados);
 
+            //update the last ID with the file 'ultimoID'
+            ultimoID = leerUltimoID();
+
             for (int i = 0; i < cantidadEmpleados; i++)
             {
                 //increase the last ID
@@ -161,6 +169,7 @@ void agregarUsuarios()
                 printf("Ingrese la contraseña del empleado %d\n",ultimoID);
                 scanf("%s",empleados[i].contraseña);
             }
+            escribirUltimoID(ultimoID);
             //empleados, pointer that contents the data
             // sizeof size of bytes for each empleado
             //cantidadEmpleados, elemnts to write
@@ -261,8 +270,23 @@ void agregarUsuarios()
                     perror("Error al abrir Empleados.txt");
                     return 1;
                 }
-
+                //File to restart the ID's because all data is eliminated
+                FILE *eliminarEmpleados = fopen("ultimoID.txt","w");
+                if (eliminarEmpleados == NULL)
+                {
+                    perror("Error al reiniciar ID en ultimoID.txt");
+                }
+                int ultimoID;
+                //If the integer is different to 0, write 0 in the file
+                if (fscanf(eliminarEmpleados, "%d", ultimoID) != 0)
+                {
+                    ultimoID = 0;
+                    fseek(eliminarEmpleados, 0, SEEK_SET);
+                    fprintf(eliminarEmpleados, "%d", ultimoID);
+                }
+                
                 fclose(busquedaEmpleados);
+                fclose(eliminarEmpleados);
                 printf("Todos los empleados han sido eliminados con éxito.\n");
             }
             else
@@ -281,4 +305,40 @@ void agregarUsuarios()
     //Release the memory and close the files, without errors on the files
     fclose(Administrador);
     fclose(Empleados);
+}
+
+//Functions to fix the bug of ID's different
+int leerUltimoID()
+{   
+    //File to read the last ID with the protocol 'r+' if doesnt exists nothing at the file
+    FILE *archivoID = fopen("ultimoID.txt","r+");
+    if (archivoID == NULL)
+    {
+        perror("\nError al abrir el archivo ultimoID.txt \n");
+        return;
+    }
+    int ultimoID;
+    if (fscanf(archivoID,"%d",&ultimoID)!=1)
+    {
+        //If not is possible read a integer, assigns 0 to ultimoID
+        ultimoID = 0;
+        //Move the pointer to the start and write again
+        fseek(archivoID,0,SEEK_SET);
+        fprintf(archivoID,"%d",ultimoID);
+    }
+    
+    fclose(archivoID);
+    return ultimoID;
+}
+void escribirUltimoID(int ultimoID)
+{
+    //File to write the last ID with the protocol 'w' to just write
+    FILE *archivoID = fopen("ultimoID.txt","w");
+    if (ultimoID == NULL)
+    {
+        perror("Error al abrir el archivo ultimoID.txt");
+    }
+
+    fprintf(archivoID,"%d",ultimoID);
+    fclose(archivoID);
 }
