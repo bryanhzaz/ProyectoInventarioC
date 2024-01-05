@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/bryan/Documents/ProyectoInventarioC",
-      "program": "c:/Users/bryan/Documents/ProyectoInventarioC/build/Debug/outDebug",
+      "cwd": "c:/Users/bryan/Documents/ProyectoInventarioC/ProyectoInventarioC",
+      "program": "c:/Users/bryan/Documents/ProyectoInventarioC/ProyectoInventarioC/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

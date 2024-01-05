@@ -342,3 +342,8 @@ void escribirUltimoID(int ultimoID)
     fprintf(archivoID,"%d",ultimoID);
     fclose(archivoID);
 }
+
+void agregarProductos()
+{
+    
+}
