@@ -4,10 +4,12 @@ Author: Bryan Hernandez A.
 Delivery date: 8 January 2024*/
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 //To eliminate the error with ftruncate
 #include <unistd.h>
 
 
+/*Functions, structs to Add users*/
 //Declaration of Function to add users
 void agregarUsuarios();
 
@@ -15,7 +17,7 @@ void agregarUsuarios();
 int leerUltimoID();
 void escribirUltimoID(int ultimoID);
 
-// Array to add to the pointer *Empleados
+// Struct to add to the pointer *Empleados
 struct AgregarEmpleado
 {
     char nombre[50];
@@ -24,8 +26,20 @@ struct AgregarEmpleado
     char contraseña[50];
 };
 
+/*Function and structs to add products*/
 //Function declarated to 'agregar productos'
 void agregarProductos();
+
+//Struct to show list of products to any file 
+struct Producto
+{
+    char nombre[50];
+    float cantidad;
+};
+//Declaration of Function to show a list of products
+void mostrarProductos(FILE *archivo);
+
+
 
 //Main:
 int main()
@@ -352,10 +366,12 @@ void agregarProductos()
     do
     {
         int menuAgregarProductos;
+        int menuListadoproductos;
         printf("\nElija lo que requiere\n");
         printf("1. Agregar Productos\n");
-        printf("2. Eliminar productos\n");
-        printf("3. Salir\n:");
+        printf("2. Ver listas de productos\n");
+        printf("3. Eliminar productos\n");
+        printf("4. Salir\n:");
         scanf("%d",&menuAgregarProductos);
 
         //Variable to compare password
@@ -394,7 +410,7 @@ void agregarProductos()
 
                 do
                 {
-                    //Menu to add each product that the admin choose
+                    //Menu to add each product that the admin choose (must testing)
                     switch (menuProductos)
                     {
                     //ABARROTES
@@ -615,15 +631,63 @@ void agregarProductos()
                 printf("\nContraseña erronea");
             }
             break;
-        
-        //Delete products (first shows a list of product choosed and then the admin delete inside of file someone or all)
+        //See all products of department specific
         case 2:
+            
+            printf("\n¿Qué lista quieres ver?\n");
+            printf("\n1. Abarrotes\n");
+            printf("2. Enlatados\n");
+            printf("3. Lácteos\n");
+            printf("4. Botanas\n");
+            printf("5. Frutas y verduras\n");
+            printf("6. Bebidas alcoholicas\n");
+            printf("7. Higiene personal\n");
+            printf("8. Limpieza\n");
+            printf("\n9. Salir \n:");
+            scanf("%d", &menuListadoproductos);
+
+            FILE *listaproductos = NULL;
+            switch (menuListadoproductos)
+                {
+                case 1:
+                    listaproductos = fopen("Abarrotes.txt","r");
+                    if (listaproductos == NULL)
+                    {
+                        perror("Error al abrir Abarrotes.txt para mostrar lista");
+                    }
+                    mostrarProductos(listaproductos);
+                    fclose(listaproductos);
+                    
+                    break;
+                
+                default:
+                    printf("Opción no válida");
+                    break;
+                }
+        //Delete products (first shows a list of product choosed and then the admin delete inside of file someone or all)
+        case 3:
 
             break;
         fclose(agregarProdAdmin);
-        case 3:
+        case 4:
             return;
         }
     } while (1);
     
 }
+
+
+// Function to show the list of products
+void mostrarProductos(FILE *archivo) {
+    char nombre[50];
+    float cantidad;
+
+    printf("\nLista de productos:\n");
+    printf("%-20s || %-20s\n", "Producto", "Cantidad en kg o unidades");
+
+    // Read the content of file
+    while (fscanf(archivo, "{%[^,],%f},", nombre, &cantidad) == 2) {
+        printf("%-20s || %-20.2f\n", nombre, cantidad);
+    }
+}
+
