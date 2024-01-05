@@ -24,6 +24,9 @@ struct AgregarEmpleado
     char contraseña[50];
 };
 
+//Function declarated to 'agregar productos'
+void agregarProductos();
+
 //Main:
 int main()
 {
@@ -48,7 +51,7 @@ int main()
         break;
     case 2:
         //Function to add products is developed
-        printf("Agregar funcion de añadir productos");
+        agregarProductos();
         break;
     case 3:
         //Function to update stock is developed
@@ -343,7 +346,284 @@ void escribirUltimoID(int ultimoID)
     fclose(archivoID);
 }
 
+
 void agregarProductos()
 {
+    do
+    {
+        int menuAgregarProductos;
+        printf("\nElija lo que requiere\n");
+        printf("1. Agregar Productos\n");
+        printf("2. Eliminar productos\n");
+        printf("3. Salir\n:");
+        scanf("%d",&menuAgregarProductos);
+
+        //Variable to compare password
+        char validarContraseña[50];
+        switch (menuAgregarProductos)
+        {
+        case 1:
+            //Process to validation passowrd admin
+            printf("\nPara poder agregar productos, por favor ingrese la contraseña de admin\n");
+            scanf("%s", validarContraseña);
+            FILE *agregarProdAdmin = fopen("Administrador.txt", "r+");
+            if (agregarProdAdmin == NULL)
+            {
+                perror("Error al abrir Administrador.txt para agregar productos");
+            }
+            char usuario[50],contraseña[50];
+            fscanf(agregarProdAdmin, "%s %s",usuario,contraseña);
+
+            //Add products after of password admin validation
+            if (strcmp(validarContraseña, contraseña) == 0)
+            {
+                int menuProductos;
+                printf("Ingresa el tipo de producto a registrar\n");
+                printf("\n1. Abarrotes\n");
+                printf("2. Enlatados\n");
+                printf("3. Lácteos\n");
+                printf("4. Botanas\n");
+                printf("5. Frutas y verduras\n");
+                printf("6. Bebidas alcoholicas\n");
+                printf("7. Higiene personal\n");
+                printf("8. Limpieza\n");
+                printf("\n9. Salir \n:");
+                scanf("%d",&menuProductos);
+
+                int cantidadProductos;
+
+                do
+                {
+                    //Menu to add each product that the admin choose
+                    switch (menuProductos)
+                    {
+                    //ABARROTES
+                    case 1:
+                        printf("Ingrese la cantidad de productos de abarrotes a ingresar\n");
+                        scanf("%d",&cantidadProductos);
+                        //File to add 'abarrotes' in .txt
+                        FILE *abarrotes = fopen("Abarrotes.txt","a");
+                        if (abarrotes == NULL)
+                        {
+                            perror("Error al abrir Abarrotes.txt para agregar productos\n");
+                        }
+
+                        for (int i = 0; i < cantidadProductos; i++)
+                        {
+                            char producto[50];
+                            float cantidad;
+
+                            printf("Ingrese el nombre del producto %d\n:",i+1);
+                            scanf("%s", producto);
+                            printf("Ingrese las unidades o cantidad de producto en kg\n:");
+                            scanf("%f",&cantidad);
+
+                            fprintf(abarrotes, "{%s,%.2f},", producto,cantidad);
+                        }
+                        fclose(abarrotes);
+                        
+                        return;
+                    //ENLATADOS
+                    case 2:
+                        printf("Ingrese la cantidad de productos de enlatados a ingresar\n");
+                        scanf("%d",&cantidadProductos);
+                        //File to add 'abarrotes' in .txt
+                        FILE *enlatados = fopen("Enlatados.txt","a");
+                        if (enlatados == NULL)
+                        {
+                            perror("Error al abrir Abarrotes.txt para agregar productos\n");
+                        }
+
+                        for (int i = 0; i < cantidadProductos; i++)
+                        {
+                            char producto[50];
+                            float cantidad;
+
+                            printf("Ingrese el nombre del producto %d\n:",i+1);
+                            scanf("%s", producto);
+                            printf("Ingrese las unidades o cantidad de producto en kg\n:");
+                            scanf("%f",&cantidad);
+
+                            fprintf(enlatados, "{%s,%.2f},", producto,cantidad);
+                        }
+                        fclose(enlatados);
+                        
+                        return;
+                    //Lacteos    
+                    case 3:
+                        printf("Ingrese la cantidad de productos de lacteos a ingresar\n");
+                        scanf("%d",&cantidadProductos);
+                        //File to add 'abarrotes' in .txt
+                        FILE *lacteos = fopen("Lacteos.txt","a");
+                        if (lacteos == NULL)
+                        {
+                            perror("Error al abrir Lacteos.txt para agregar productos\n");
+                        }
+
+                        for (int i = 0; i < cantidadProductos; i++)
+                        {
+                            char producto[50];
+                            float cantidad;
+
+                            printf("Ingrese el nombre del producto %d\n:",i+1);
+                            scanf("%s", producto);
+                            printf("Ingrese las unidades o cantidad de producto en kg\n:");
+                            scanf("%f",&cantidad);
+
+                            fprintf(lacteos, "{%s,%.2f},", producto,cantidad);
+                        }
+                        fclose(lacteos);
+                        
+                        return;
+                    //botanas
+                    case 4:
+                        printf("Ingrese la cantidad de productos de botanas a ingresar\n");
+                        scanf("%d",&cantidadProductos);
+                        //File to add 'abarrotes' in .txt
+                        FILE *botanas = fopen("Botanas.txt","a");
+                        if (botanas == NULL)
+                        {
+                            perror("Error al abrir Botanas.txt para agregar productos\n");
+                        }
+
+                        for (int i = 0; i < cantidadProductos; i++)
+                        {
+                            char producto[50];
+                            float cantidad;
+
+                            printf("Ingrese el nombre del producto %d\n:",i+1);
+                            scanf("%s", producto);
+                            printf("Ingrese las unidades o cantidad de producto en kg\n:");
+                            scanf("%f",&cantidad);
+
+                            fprintf(botanas, "{%s,%.2f},", producto,cantidad);
+                        }
+                        fclose(botanas);
+                        
+                        return;
+                    //Frutas y verduras
+                    case 5:
+                        printf("Ingrese la cantidad de productos de Frutas y Verduras a ingresar\n");
+                        scanf("%d",&cantidadProductos);
+                        //File to add 'abarrotes' in .txt
+                        FILE *fyv = fopen("FrutasYVeruras.txt","a");
+                        if (fyv == NULL)
+                        {
+                            perror("Error al abrir FrutasYVerduras.txt para agregar productos\n");
+                        }
+
+                        for (int i = 0; i < cantidadProductos; i++)
+                        {
+                            char producto[50];
+                            float cantidad;
+
+                            printf("Ingrese el nombre del producto %d\n:",i+1);
+                            scanf("%s", producto);
+                            printf("Ingrese las unidades o cantidad de producto en kg\n:");
+                            scanf("%f",&cantidad);
+
+                            fprintf(fyv, "{%s,%.2f},", producto,cantidad);
+                        }
+                        fclose(fyv);
+                        
+                        return;
+                    //Bebidas alcoholicas
+                    case 6:
+                        printf("Ingrese la cantidad de productos de bebidas alcoholicas a ingresar\n");
+                        scanf("%d",&cantidadProductos);
+                        //File to add 'abarrotes' in .txt
+                        FILE *BA = fopen("BebidasAlcoholicas.txt","a");
+                        if (BA == NULL)
+                        {
+                            perror("Error al abrir BebidasAlcoholicas.txt para agregar productos\n");
+                        }
+
+                        for (int i = 0; i < cantidadProductos; i++)
+                        {
+                            char producto[50];
+                            float cantidad;
+
+                            printf("Ingrese el nombre del producto %d\n:",i+1);
+                            scanf("%s", producto);
+                            printf("Ingrese las unidades o cantidad de producto en kg\n:");
+                            scanf("%f",&cantidad);
+
+                            fprintf(BA, "{%s,%.2f},", producto,cantidad);
+                        }
+                        fclose(BA);
+                        
+                        return;
+                    case 7:
+                        printf("Ingrese la cantidad de productos de higiene personal a ingresar\n");
+                        scanf("%d",&cantidadProductos);
+                        //File to add 'abarrotes' in .txt
+                        FILE *HP = fopen("HigienePersonal.txt","a");
+                        if (HP == NULL)
+                        {
+                            perror("Error al abrir HigienePersonal.txt para agregar productos\n");
+                        }
+
+                        for (int i = 0; i < cantidadProductos; i++)
+                        {
+                            char producto[50];
+                            float cantidad;
+
+                            printf("Ingrese el nombre del producto %d\n:",i+1);
+                            scanf("%s", producto);
+                            printf("Ingrese las unidades o cantidad de producto en kg\n:");
+                            scanf("%f",&cantidad);
+
+                            fprintf(HP, "{%s,%.2f},", producto,cantidad);
+                        }
+                        fclose(HP);
+                        
+                        return;   
+                    case 8:
+                        printf("Ingrese la cantidad de productos de limpieza a ingresar\n");
+                        scanf("%d",&cantidadProductos);
+                        //File to add 'abarrotes' in .txt
+                        FILE *limpieza = fopen("Limpieza.txt","a");
+                        if (limpieza == NULL)
+                        {
+                            perror("Error al abrir Limpieza.txt para agregar productos\n");
+                        }
+
+                        for (int i = 0; i < cantidadProductos; i++)
+                        {
+                            char producto[50];
+                            float cantidad;
+
+                            printf("Ingrese el nombre del producto %d\n:",i+1);
+                            scanf("%s", producto);
+                            printf("Ingrese las unidades o cantidad de producto en kg\n:");
+                            scanf("%f",&cantidad);
+
+                            fprintf(limpieza, "{%s,%.2f},", producto,cantidad);
+                        }
+                        fclose(limpieza);
+                        
+                        return;     
+                    
+                    case 9:
+                        return;
+                    }
+                } while (1);
+                   
+            }
+            else
+            {
+                printf("\nContraseña erronea");
+            }
+            break;
+        
+        //Delete products (first shows a list of product choosed and then the admin delete inside of file someone or all)
+        case 2:
+
+            break;
+        fclose(agregarProdAdmin);
+        case 3:
+            return;
+        }
+    } while (1);
     
 }
