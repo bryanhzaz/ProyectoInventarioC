@@ -659,6 +659,79 @@ void agregarProductos()
                     fclose(listaproductos);
                     
                     break;
+                case 2:
+                    listaproductos = fopen("Enlatados.txt","r");
+                    if (listaproductos == NULL)
+                    {
+                        perror("Error al abrir Enlatados.txt para mostrar lista");
+                    }
+                    mostrarProductos(listaproductos);
+                    fclose(listaproductos);
+
+                    break;
+                case 3:
+                    listaproductos = fopen("Lacteos.txt","r");
+                    if (listaproductos == NULL)
+                    {
+                        perror("Error al abrir Lacteos.txt para mostrar lista");
+                    }
+                    mostrarProductos(listaproductos);
+                    fclose(listaproductos);
+
+                    break;
+                case 4: 
+                    listaproductos = fopen("Botanas.txt","r");
+                    if (listaproductos == NULL)
+                    {
+                        perror("Error al abrir Botanas.txt para mostrar lista");
+                    }
+                    mostrarProductos(listaproductos);
+                    fclose(listaproductos);
+
+                    break;
+                case 5:
+                    listaproductos = fopen("FrutasYVeruras.txt","r");
+                    if (listaproductos == NULL)
+                    {
+                        perror("Error al abrir FrutasYVeruras.txt para mostrar lista");
+                    }
+                    mostrarProductos(listaproductos);
+                    fclose(listaproductos);
+
+                    break;
+                case 6:
+                    listaproductos = fopen("BebidasAlcoholicas.txt","r");
+                    if (listaproductos == NULL)
+                    {
+                        perror("Error al abrir BebidasAlcoholicas.txt para mostrar lista");
+                    }
+                    mostrarProductos(listaproductos);
+                    fclose(listaproductos);
+
+                    break;
+                
+                case 7:
+                    listaproductos = fopen("HigienePersonal.txt","r");
+                    if (listaproductos == NULL)
+                    {
+                        perror("Error al abrir HigienePersonal.txt para mostrar lista");
+                    }
+                    mostrarProductos(listaproductos);
+                    fclose(listaproductos);
+
+                    break;
+                case 8:
+                    listaproductos = fopen("Limpieza.txt","r");
+                    if (listaproductos == NULL)
+                    {
+                        perror("Error al abrir Limpieza.txt para mostrar lista");
+                    }
+                    mostrarProductos(listaproductos);
+                    fclose(listaproductos);
+
+                    break;
+                case 9:
+                    return;
                 
                 default:
                     printf("Opción no válida");
