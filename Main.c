@@ -30,7 +30,8 @@ struct AgregarEmpleado
 //Function declarated to 'agregar productos'
 void agregarProductos();
 
-//Struct to show list of products to any file 
+//Struct to show list of products to any file
+//Struct use too in 'actualizasStock' 
 struct Producto
 {
     char nombre[50];
@@ -42,9 +43,16 @@ void mostrarProductos(FILE *archivo);
 //Function to delete lists of products with confirmation of user
 void eliminarProductos(char *nombrearchivo);
 
-
+/*Function and structs to update stock*/
 //Function to update stock
 void actualizarStock();
+void mostrarProductosStock(struct Producto *productos, int numProductos);
+struct Empleado
+{
+    char nombre[50];
+    char ID[5];
+    char contraseña[50];
+};
 
 
 //Main:
@@ -75,7 +83,7 @@ int main()
         break;
     case 3:
         //Function to update stock is developed
-        printf("Agregar funcion de actualizacion de stock");
+        actualizarStock();
         break;
     case 4:
         //Function to generate inventory reports is developed
@@ -863,9 +871,120 @@ void eliminarProductos(char *nombrearchivo)
 
 }
 
-
-//Function to update stock
 void actualizarStock()
 {
+    int menuStock;
+    int menuArea;
+    printf("\nElige la opción de actualizacion\n");
+    printf("1. Agregar unidades\n");
+    printf("2. Descartar unidades");
+    printf("\nSalir\n:");
+    scanf("%d", &menuStock);
 
+    // Declaration of files to any product
+    FILE *archivo;
+    char *nombreArchivo;
+
+    // To count products
+    int numProductos = 0;
+    char c;
+
+    switch (menuStock)
+    {
+    case 1:
+        printf("\nAhora elige el área a actualizar\n");
+        printf("1. Abarrotes");
+        printf("\n:");
+        scanf("%d", &menuArea);
+        switch (menuArea)
+        {
+        case 1:
+            nombreArchivo = "Abarrotes.txt";
+            archivo = fopen(nombreArchivo, "r");
+            if (archivo == NULL)
+            {
+                perror("Error al abrir Abarrotes.txt para mostrar lista de productos");
+                return;
+            }
+
+            while ((c = fgetc(archivo)) != EOF)
+            {
+                if (c == '}')
+                {
+                    numProductos++;
+                }
+            }
+            rewind(archivo);
+
+            struct Producto *productos = (struct Producto *)malloc(numProductos * sizeof(struct Producto));
+            if (productos == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                fclose(archivo);
+                return;
+            }
+
+            for (int i = 0; i < numProductos; i++)
+            {
+                fscanf(archivo, "{%[^,],%f},", productos[i].nombre, &productos[i].cantidad);
+            }
+            fclose(archivo);
+
+            mostrarProductosStock(productos, numProductos);
+
+            int *opciones = (int *)malloc(numProductos * sizeof(int));
+            if (opciones == NULL)
+            {
+                perror("Error de asignación de memoria\n");
+                free(productos);
+                return;
+            }
+
+            printf("\nSeleccione los productos a actualizar (Ejemplo: 1 4)\n:");
+            for (int i = 0; i < numProductos; i++)
+            {
+                scanf("%d", &opciones[i]);
+            }
+
+            printf("\nProductos seleccionados:\n");
+            for (int i = 0; i < numProductos; i++)
+            {
+                if (opciones[i])
+                {
+                    printf("%d. %s || Cantidad (En unidades o kg) %.2f\n", opciones[i], productos[opciones[i] - 1].nombre, productos[opciones[i] - 1].cantidad);
+                }
+            }
+
+            free(productos);
+            free(opciones);
+
+            break;
+
+        default:
+            break;
+        }
+        break;
+    case 2:
+
+        break;
+    case 3:
+
+        return;
+
+    default:
+        break;
+    }
 }
+
+void mostrarProductosStock(struct Producto *productos, int numProductosStock)
+{
+    printf("\nLista de productos\n");
+    for (int i = 0; i < numProductosStock; i++)
+    {
+        printf("%d. %s || Cantidad (En unidades o kg) %.2f\n", i + 1, productos[i].nombre, productos[i].cantidad);
+    }
+}
+
+
+
+
