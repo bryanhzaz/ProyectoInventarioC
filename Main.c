@@ -36,8 +36,11 @@ struct Producto
     char nombre[50];
     float cantidad;
 };
-//Declaration of Function to show a list of products
+//Declaration of Function to show a list of products with any file 
 void mostrarProductos(FILE *archivo);
+
+//Function to delete lists of products with confirmation of user
+void eliminarProductos(char *nombrearchivo);
 
 
 
@@ -95,7 +98,7 @@ int main()
     return 0;
 }
 
-//Create Admin, employe to manage the inventory
+//Create Admin, employe to manage the inventory (is ready)
 void agregarUsuarios()
 {
     //The pointer *Administrador will open in protocol open and append to update in each aperture 
@@ -360,13 +363,14 @@ void escribirUltimoID(int ultimoID)
     fclose(archivoID);
 }
 
-
+//Add products, see lists and delete data (is ready)
 void agregarProductos()
 {
     do
     {
         int menuAgregarProductos;
         int menuListadoproductos;
+        int menuBorrarproductos;
         printf("\nElija lo que requiere\n");
         printf("1. Agregar Productos\n");
         printf("2. Ver listas de productos\n");
@@ -739,9 +743,53 @@ void agregarProductos()
                 }
         //Delete products (first shows a list of product choosed and then the admin delete inside of file someone or all)
         case 3:
+            printf("\n¿Qué lista quieres eliminar?\n");
+            printf("\n1. Abarrotes\n");
+            printf("2. Enlatados\n");
+            printf("3. Lácteos\n");
+            printf("4. Botanas\n");
+            printf("5. Frutas y verduras\n");
+            printf("6. Bebidas alcoholicas\n");
+            printf("7. Higiene personal\n");
+            printf("8. Limpieza\n");
+            printf("\n9. Salir \n:");
+            scanf("%d", &menuBorrarproductos);
+            switch (menuBorrarproductos)
+            {
+            case 1:
+                eliminarProductos("Abarrotes.txt");
+                break;
+            case 2: 
+                eliminarProductos("Enlatados.txt");
+                break;
+            case 3:
+                eliminarProductos("Lacteos.txt");
+                break;
+            case 4:
+                eliminarProductos("Botanas.txt");
+                break;
+            case 5:
+                eliminarProductos("FrutasYVeruras.txt");
+                break;
+            case 6:
+                eliminarProductos("BebidasAlcoholicas.txt");
+                break;
+            case 7:
+                eliminarProductos("HigienePersonal.txt");
+                break;
+            case 8:
+                eliminarProductos("Limpieza.txt");
+                break;
+            case 9:
+                return;
+            
+            default:
+                break;
+            }
 
             break;
         fclose(agregarProdAdmin);
+        //Option to can out of this menu
         case 4:
             return;
         }
@@ -764,3 +812,49 @@ void mostrarProductos(FILE *archivo) {
     }
 }
 
+//Function to delete lists of products with confirmation of user
+void eliminarProductos(char *nombrearchivo)
+{
+    char respuesta;
+    printf("\n¿Estás seguro que deseas eliminar toda la lista de productos seleccionada?\n");
+    printf("Escribe 'S' para confirmar o 'N' para eliminar seleccion\n:");
+    scanf(" %c", &respuesta);
+
+    char validarContraseña[50];
+    printf("\nPara poder validar seleccion, por favor ingrese la contraseña de admin\n");
+    scanf("%s", validarContraseña);
+    FILE *seguridadAdmin = fopen("Administrador.txt", "r+");
+    if (seguridadAdmin == NULL)
+    {
+        perror("Error al abrir Administrador.txt para agregar productos");
+    }
+    char usuario[50],contraseña[50];
+    fscanf(seguridadAdmin, "%s %s",usuario,contraseña);
+
+    if (strcmp(validarContraseña,contraseña) == 0)
+    {
+        if (respuesta == 'S' || respuesta == 's')
+        {
+            FILE *archivo = fopen(nombrearchivo,"w");
+            if (archivo == NULL)
+            {
+                perror("\nError al abrir archivo para borrar");
+            }
+            
+            //Delete all file of directory
+            remove(nombrearchivo);
+            printf("Se han eliminado todos los productos\n");
+        }
+        else
+        {
+            printf("\nNo se eliminaron los productos\n");
+        }
+        
+    }
+    else
+    {
+        printf("\nContraseña erronea");
+    }
+    fclose(seguridadAdmin);
+    
+}
