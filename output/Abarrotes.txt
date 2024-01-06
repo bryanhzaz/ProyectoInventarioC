@@ -1,0 +1,1 @@
+{Coca2L,4.00},{Azucar,2.00},{Maiz,6.00},{Frijoles,2.00},

@@ -885,12 +885,24 @@ void actualizarStock()
     FILE *archivo;
     char *nombreArchivo;
 
-    // To count products
-    int numProductos = 0;
-    char c;
+    //Validate the ID with password
+    FILE *empleadosArchivo = fopen("Empleados.txt","r");
+    if (empleadosArchivo == NULL)
+    {
+        perror("No es posible abrir Empleados.txt");
+        return;
+    }
+    //Verification of empleado
+    char empleadoID[5];
+    char contraseña[50];
+
+    
+
+    
 
     switch (menuStock)
     {
+    //Increase the products
     case 1:
         printf("\nAhora elige el área a actualizar\n");
         printf("1. Abarrotes");
@@ -898,7 +910,35 @@ void actualizarStock()
         scanf("%d", &menuArea);
         switch (menuArea)
         {
+        //Abarrotes
         case 1:
+            printf("Ingrese su ID de empleado (4 digitos sin espacio)\n:");
+            scanf("%s", empleadoID);
+
+            printf("\nIngrese su contraseña sin espacios\n");
+            scanf("%s", contraseña);
+
+
+            struct Empleado empleadoActual;
+            int empleadoEncontrado = 0;
+
+            while (fscanf(empleadosArchivo, "{%[^,],%[^,],%[^}]}%*c", empleadoActual.nombre, empleadoActual.ID, empleadoActual.contraseña) == 3)
+            {
+                if (strcmp(empleadoActual.ID, empleadoID) == 0 && strcmp(empleadoActual.contraseña, contraseña) == 0)
+                {
+                    empleadoEncontrado = 1;
+                    break;
+                }
+            
+            }
+            fclose(empleadosArchivo);
+
+            if (!empleadosArchivo)
+            {
+                printf("ID de empleado o contraseña incorrectos,\n");
+                return;
+            }
+
             nombreArchivo = "Abarrotes.txt";
             archivo = fopen(nombreArchivo, "r");
             if (archivo == NULL)
@@ -906,6 +946,9 @@ void actualizarStock()
                 perror("Error al abrir Abarrotes.txt para mostrar lista de productos");
                 return;
             }
+            // To count products
+            int numProductos = 0;
+            char c;
 
             while ((c = fgetc(archivo)) != EOF)
             {
@@ -946,15 +989,37 @@ void actualizarStock()
                 scanf("%d", &opciones[i]);
             }
 
-            printf("\nProductos seleccionados:\n");
+            //Update the amoun of products
             for (int i = 0; i < numProductos; i++)
             {
                 if (opciones[i])
                 {
-                    printf("%d. %s || Cantidad (En unidades o kg) %.2f\n", opciones[i], productos[opciones[i] - 1].nombre, productos[opciones[i] - 1].cantidad);
+                    float cantidadAgregar;
+                    printf("Ingrese la cantidad a agregar de %s: ", productos[i].nombre);
+                    scanf("%f",&cantidadAgregar);
+
+                    productos[i].cantidad += cantidadAgregar;
                 }
+                
+            }
+            
+            FILE *archivoEmpleados = fopen("AbarrotesEmpleados.txt", "a+");
+            if (archivoEmpleados == NULL)
+            {
+                perror("Error al abrir o crear AbarrotesEmpleados.txt");
+                free(productos);
+                free(opciones);
+                return;
             }
 
+            //Save the products
+            for (int i = 0; i < numProductos; i++)
+            {
+                fprintf(archivoEmpleados, "{%s,%.2f,%s},", productos[i].nombre, productos[i].cantidad, empleadoID);
+            }
+            
+            
+            fclose(archivoEmpleados);
             free(productos);
             free(opciones);
 
