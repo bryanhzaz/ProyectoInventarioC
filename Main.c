@@ -43,6 +43,9 @@ void mostrarProductos(FILE *archivo);
 void eliminarProductos(char *nombrearchivo);
 
 
+//Function to update stock
+void actualizarStock();
+
 
 //Main:
 int main()
@@ -63,11 +66,11 @@ int main()
     switch (opcion)
     {
     case 1:
-        //Function to add users is ready
+        //Function to add users is ready (all data is in form matrix)
         agregarUsuarios();
         break;
     case 2:
-        //Function to add products is developed
+        //Function to add products is ready (all data is in form matrix)
         agregarProductos();
         break;
     case 3:
@@ -189,16 +192,19 @@ void agregarUsuarios()
                 printf("Ingrese la contraseña del empleado %d\n",ultimoID);
                 scanf("%s",empleados[i].contraseña);
             }
+            //To update each ID if the list registers not is consecutive
             escribirUltimoID(ultimoID);
-            //empleados, pointer that contents the data
-            // sizeof size of bytes for each empleado
-            //cantidadEmpleados, elemnts to write
-            //Empleados, the file set with a pointer to which you want to write
-            fwrite(empleados, sizeof(struct AgregarEmpleado), cantidadEmpleados, Empleados);
-            break;
+            //Matrix of 'empleados' in the form {Nombre, ID, Contraseña},
+            for (int i = 0; i < cantidadEmpleados; i++)
+            {
+                fprintf(Empleados, "{%s, %s, %s},",empleados[i].nombre,empleados[i].ID, empleados[i].contraseña);
+            }
+            
+
             //Close the file of Empleados to update in each change of menu option
             fclose(Empleados);
-
+            
+            break;
             /*Now develops the two last options of this menu to eliminate admin or employee*/
         case 3:
             printf("Ingrese la contraseña para validar y eliminar usuario Administrador\n:");
@@ -253,17 +259,15 @@ void agregarUsuarios()
                     return;
                 }
 
-                // Declara una estructura temporal para leer cada empleado
-                struct AgregarEmpleado empleado;
-
-                // Lee y muestra la información de cada empleado hasta el final del archivo
-                printf("\nListado de empleados:\n");
-                while (fread(&empleado, sizeof(struct AgregarEmpleado), 1, EmpleadosLista) == 1)
+                char nombre[50], ID[50], contraseñaEmpleados[50];
+                printf("\nListado de empleados\n");
+                while (fscanf(EmpleadosLista, "{%[^,],%[^,],%[^}]},",nombre,ID, contraseñaEmpleados) == 3)
                 {
-                    printf("ID: %s | Nombre: %s | Contraseña: %s\n", empleado.ID, empleado.nombre, empleado.contraseña);
+                    printf("Nombre: %s || ID: %s || Contraseña: %s\n",nombre,ID,contraseñaEmpleados);
                 }
+                
 
-                // Cierra el archivo de empleados
+                // Close the files of 'empleados'
                 fclose(EmpleadosLista);
             }
             else
@@ -856,5 +860,12 @@ void eliminarProductos(char *nombrearchivo)
         printf("\nContraseña erronea");
     }
     fclose(seguridadAdmin);
+
+}
+
+
+//Function to update stock
+void actualizarStock()
+{
 
 }
