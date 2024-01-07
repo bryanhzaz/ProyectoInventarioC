@@ -925,7 +925,7 @@ void actualizarStock()
 
 
 
-
+    //File to Abarrotes
     FILE *archivo;
     char *nombreArchivo = "Abarrotes.txt";
     archivo = fopen(nombreArchivo, "r");
@@ -934,6 +934,76 @@ void actualizarStock()
         perror("Error al abrir Abarrotes.txt para mostrar lista de productos");
         return;
     }
+
+    //File to Enlatados
+    FILE *archivo2;
+    char *nombreArchivo2 = "Enlatados.txt";
+    archivo2 = fopen(nombreArchivo2, "r");
+    if (archivo2 == NULL)
+    {
+        perror("Error al abrir Enlatados.txt para mostrar lista de productos");
+        return;
+    }
+
+    //File to Lacteos
+    FILE *archivo3;
+    char *nombreArchivo3 = "Lacteos.txt";
+    archivo3 = fopen(nombreArchivo3, "r");
+    if (archivo3 == NULL)
+    {
+        perror("Error al abrir Lacteos.txt para mostrar lista de productos");
+        return;
+    }
+
+    //File to Botanas 
+    FILE *archivo4;
+    char *nombreArchivo4 = "Botanas.txt";
+    archivo4 = fopen(nombreArchivo4, "r");
+    if (archivo4 == NULL)
+    {
+        perror("Error al abrir Botanas.txt para mostrar lista de productos");
+        return;
+    }
+
+    //File to FrutasYVeruras 
+    FILE *archivo5;
+    char *nombreArchivo5 = "FrutasYVeruras.txt";
+    archivo5 = fopen(nombreArchivo5, "r");
+    if (archivo5 == NULL)
+    {
+        perror("Error al abrir FrutasYVeruras.txt para mostrar lista de productos");
+        return;
+    }
+
+    //File to BebidasAlcoholicas HigienePersonal
+    FILE *archivo6;
+    char *nombreArchivo6 = "BebidasAlcoholicas.txt";
+    archivo6 = fopen(nombreArchivo6, "r");
+    if (archivo6 == NULL)
+    {
+        perror("Error al abrir BebidasAlcoholicas.txt para mostrar lista de productos");
+        return;
+    }
+
+    //File to HigienePersonal
+    FILE *archivo7;
+    char *nombreArchivo7 = "HigienePersonal.txt";
+    archivo7 = fopen(nombreArchivo7, "r");
+    if (archivo7 == NULL)
+    {
+        perror("Error al abrir HigienePersonal.txt para mostrar lista de productos");
+        return;
+    }
+    //File to Limpieza
+    FILE *archivo8;
+    char *nombreArchivo8 = "Limpieza.txt";
+    archivo8 = fopen(nombreArchivo8, "r");
+    if (archivo8 == NULL)
+    {
+        perror("Error al abrir HigienePersonal.txt para mostrar lista de productos");
+        return;
+    }
+
     // To count products
     int numProductos = 0;
     char c;
@@ -944,6 +1014,13 @@ void actualizarStock()
     case 1:
         printf("\nAhora elige el área a actualizar\n");
         printf("1. Abarrotes");
+        printf("2. Enlatados\n");
+        printf("3. Lácteos\n");
+        printf("4. Botanas\n");
+        printf("5. Frutas y verduras\n");
+        printf("6. Bebidas alcoholicas\n");
+        printf("7. Higiene personal\n");
+        printf("8. Limpieza\n");
         printf("\n:");
         scanf("%d", &menuArea);
         switch (menuArea)
@@ -951,7 +1028,7 @@ void actualizarStock()
         // Abarrotes
         case 1:
             
-            while ((c = fgetc(archivo)) != EOF)
+            while ((c = fgetc(archivo)) != EOF)   
             {
                 if (c == '}')
                 {
@@ -978,31 +1055,58 @@ void actualizarStock()
 
             mostrarProductosStock(productos, numProductos);
 
-            int *opciones = (int *)malloc(numProductos * sizeof(int));
-            if (opciones == NULL)
+
+            int cantidad;
+            printf("Ingresa la cantidad de productos de la lista que actualizaras\n");
+            scanf("%d", &cantidad);
+
+            if (cantidad<=0 || cantidad > numProductos)
             {
-                perror("Error de asignación de memoria\n");
+                printf("Cantidad no valida.\n");
                 free(productos);
                 return;
             }
-
-            printf("\nSeleccione los productos a actualizar (Ejemplo: 1 4)\n:");
-            for (int i = 0; i < numProductos; i++)
+            
+            int *opciones = (int *)malloc(cantidad * sizeof(int));
+            if (opciones == NULL)
             {
-                scanf("%d", &opciones[i]);
+                perror("Error al asignar memoria\n");
+                free(productos);
+                return;
+            }
+            
+
+            printf("\nSeleccione las opciones de productos a actualizar en la lista\n:");
+            for (int i = 0; i < cantidad; i++)
+            {
+                int opcion;
+                scanf("%d", &opcion);
+
+                opcion--;
+
+                if (opcion<0 || opcion>=numProductos)
+                {
+                    printf("Opcion no valida");
+                    i--;
+                }
+                else
+                {
+                    opciones[i] = opcion;
+                }
+                
             }
 
             // Update the amount of products
-            for (int i = 0; i < numProductos; i++)
+            for (int i = 0; i < cantidad; i++)
             {
-                if (opciones[i])
-                {
-                    float cantidadAgregar;
-                    printf("Ingrese la cantidad a agregar de %s: ", productos[i].nombre);
-                    scanf("%f", &cantidadAgregar);
+                
+                int indice = opciones[i];
+                float cantidadAgregar;
+                printf("Ingrese la cantidad a agregar de %s: ", productos[indice].nombre);
+                scanf("%f", &cantidadAgregar);
 
-                    productos[i].cantidad += cantidadAgregar;
-                }
+                productos[indice].cantidad += cantidadAgregar;
+                
             }
 
             FILE *archivoEmpleados = fopen("AbarrotesEmpleados.txt", "a+");
@@ -1025,6 +1129,723 @@ void actualizarStock()
             free(opciones);
 
             break;
+        case 2:
+            //Enlatados.txt
+            while ((c = fgetc(archivo2)) != EOF)   
+            {
+                if (c == '}')
+                {
+                    numProductos++;
+                }
+            }
+
+            rewind(archivo2);
+
+            struct Producto *productos = (struct Producto *)malloc(numProductos * sizeof(struct Producto));
+            if (productos == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                fclose(archivo2);
+                return;
+            }
+
+            for (int i = 0; i < numProductos; i++)
+            {
+                fscanf(archivo2, "{%[^,],%f},", productos[i].nombre, &productos[i].cantidad);
+            }
+
+            fclose(archivo2);
+
+            mostrarProductosStock(productos, numProductos);
+
+
+            int cantidad;
+            printf("Ingresa la cantidad de productos de la lista que actualizaras\n");
+            scanf("%d", &cantidad);
+
+            if (cantidad<=0 || cantidad > numProductos)
+            {
+                printf("Cantidad no valida.\n");
+                free(productos);
+                return;
+            }
+            
+            int *opciones = (int *)malloc(cantidad * sizeof(int));
+            if (opciones == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                free(productos);
+                return;
+            }
+            
+
+            printf("\nSeleccione las opciones de productos a actualizar en la lista\n:");
+            for (int i = 0; i < cantidad; i++)
+            {
+                int opcion;
+                scanf("%d", &opcion);
+
+                opcion--;
+
+                if (opcion<0 || opcion>=numProductos)
+                {
+                    printf("Opcion no valida");
+                    i--;
+                }
+                else
+                {
+                    opciones[i] = opcion;
+                }
+                
+            }
+
+            // Update the amount of products
+            for (int i = 0; i < cantidad; i++)
+            {
+                
+                int indice = opciones[i];
+                float cantidadAgregar;
+                printf("Ingrese la cantidad a agregar de %s: ", productos[indice].nombre);
+                scanf("%f", &cantidadAgregar);
+
+                productos[indice].cantidad += cantidadAgregar;
+                
+            }
+
+            FILE *archivoEmpleados = fopen("EnlatadosEmpleados.txt", "a+");
+            if (archivoEmpleados == NULL)
+            {
+                perror("Error al abrir o crear EnlatadosEmpleados.txt");
+                free(productos);
+                free(opciones);
+                return;
+            }
+
+            // Save the products
+            for (int i = 0; i < numProductos; i++)
+            {
+                fprintf(archivoEmpleados, "{%s,%.2f,%s},", productos[i].nombre, productos[i].cantidad, empleadoID);
+            }
+
+            fclose(archivoEmpleados);
+            free(productos);
+            free(opciones);
+            break;
+        case 3:
+            //Lacteos.txt
+            while ((c = fgetc(archivo3)) != EOF)   
+            {
+                if (c == '}')
+                {
+                    numProductos++;
+                }
+            }
+
+            rewind(archivo3);
+
+            struct Producto *productos = (struct Producto *)malloc(numProductos * sizeof(struct Producto));
+            if (productos == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                fclose(archivo3);
+                return;
+            }
+
+            for (int i = 0; i < numProductos; i++)
+            {
+                fscanf(archivo3, "{%[^,],%f},", productos[i].nombre, &productos[i].cantidad);
+            }
+
+            fclose(archivo3);
+
+            mostrarProductosStock(productos, numProductos);
+
+
+            int cantidad;
+            printf("Ingresa la cantidad de productos de la lista que actualizaras\n");
+            scanf("%d", &cantidad);
+
+            if (cantidad<=0 || cantidad > numProductos)
+            {
+                printf("Cantidad no valida.\n");
+                free(productos);
+                return;
+            }
+            
+            int *opciones = (int *)malloc(cantidad * sizeof(int));
+            if (opciones == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                free(productos);
+                return;
+            }
+            
+
+            printf("\nSeleccione las opciones de productos a actualizar en la lista\n:");
+            for (int i = 0; i < cantidad; i++)
+            {
+                int opcion;
+                scanf("%d", &opcion);
+
+                opcion--;
+
+                if (opcion<0 || opcion>=numProductos)
+                {
+                    printf("Opcion no valida");
+                    i--;
+                }
+                else
+                {
+                    opciones[i] = opcion;
+                }
+                
+            }
+
+            // Update the amount of products
+            for (int i = 0; i < cantidad; i++)
+            {
+                
+                int indice = opciones[i];
+                float cantidadAgregar;
+                printf("Ingrese la cantidad a agregar de %s: ", productos[indice].nombre);
+                scanf("%f", &cantidadAgregar);
+
+                productos[indice].cantidad += cantidadAgregar;
+                
+            }
+
+            FILE *archivoEmpleados = fopen("LacteosEmpleados.txt", "a+");
+            if (archivoEmpleados == NULL)
+            {
+                perror("Error al abrir o crear LacteosEmpleados.txt");
+                free(productos);
+                free(opciones);
+                return;
+            }
+
+            // Save the products
+            for (int i = 0; i < numProductos; i++)
+            {
+                fprintf(archivoEmpleados, "{%s,%.2f,%s},", productos[i].nombre, productos[i].cantidad, empleadoID);
+            }
+
+            fclose(archivoEmpleados);
+            free(productos);
+            free(opciones);
+            break;
+
+        case 4:
+            //Botanas
+            while ((c = fgetc(archivo4)) != EOF)   
+            {
+                if (c == '}')
+                {
+                    numProductos++;
+                }
+            }
+
+            rewind(archivo4);
+
+            struct Producto *productos = (struct Producto *)malloc(numProductos * sizeof(struct Producto));
+            if (productos == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                fclose(archivo4);
+                return;
+            }
+
+            for (int i = 0; i < numProductos; i++)
+            {
+                fscanf(archivo4, "{%[^,],%f},", productos[i].nombre, &productos[i].cantidad);
+            }
+
+            fclose(archivo4);
+
+            mostrarProductosStock(productos, numProductos);
+
+
+            int cantidad;
+            printf("Ingresa la cantidad de productos de la lista que actualizaras\n");
+            scanf("%d", &cantidad);
+
+            if (cantidad<=0 || cantidad > numProductos)
+            {
+                printf("Cantidad no valida.\n");
+                free(productos);
+                return;
+            }
+            
+            int *opciones = (int *)malloc(cantidad * sizeof(int));
+            if (opciones == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                free(productos);
+                return;
+            }
+            
+
+            printf("\nSeleccione las opciones de productos a actualizar en la lista\n:");
+            for (int i = 0; i < cantidad; i++)
+            {
+                int opcion;
+                scanf("%d", &opcion);
+
+                opcion--;
+
+                if (opcion<0 || opcion>=numProductos)
+                {
+                    printf("Opcion no valida");
+                    i--;
+                }
+                else
+                {
+                    opciones[i] = opcion;
+                }
+                
+            }
+
+            // Update the amount of products
+            for (int i = 0; i < cantidad; i++)
+            {
+                
+                int indice = opciones[i];
+                float cantidadAgregar;
+                printf("Ingrese la cantidad a agregar de %s: ", productos[indice].nombre);
+                scanf("%f", &cantidadAgregar);
+
+                productos[indice].cantidad += cantidadAgregar;
+                
+            }
+
+            FILE *archivoEmpleados = fopen("BotanasEmpleados.txt", "a+");
+            if (archivoEmpleados == NULL)
+            {
+                perror("Error al abrir o crear BotanasEmpleados.txt");
+                free(productos);
+                free(opciones);
+                return;
+            }
+
+            // Save the products
+            for (int i = 0; i < numProductos; i++)
+            {
+                fprintf(archivoEmpleados, "{%s,%.2f,%s},", productos[i].nombre, productos[i].cantidad, empleadoID);
+            }
+
+            fclose(archivoEmpleados);
+            free(productos);
+            free(opciones);
+            break;
+        case 5:
+            //Frutas y verduras
+            while ((c = fgetc(archivo5)) != EOF)   
+            {
+                if (c == '}')
+                {
+                    numProductos++;
+                }
+            }
+
+            rewind(archivo5);
+
+            struct Producto *productos = (struct Producto *)malloc(numProductos * sizeof(struct Producto));
+            if (productos == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                fclose(archivo5);
+                return;
+            }
+
+            for (int i = 0; i < numProductos; i++)
+            {
+                fscanf(archivo5, "{%[^,],%f},", productos[i].nombre, &productos[i].cantidad);
+            }
+
+            fclose(archivo5);
+
+            mostrarProductosStock(productos, numProductos);
+
+
+            int cantidad;
+            printf("Ingresa la cantidad de productos de la lista que actualizaras\n");
+            scanf("%d", &cantidad);
+
+            if (cantidad<=0 || cantidad > numProductos)
+            {
+                printf("Cantidad no valida.\n");
+                free(productos);
+                return;
+            }
+            
+            int *opciones = (int *)malloc(cantidad * sizeof(int));
+            if (opciones == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                free(productos);
+                return;
+            }
+            
+
+            printf("\nSeleccione las opciones de productos a actualizar en la lista\n:");
+            for (int i = 0; i < cantidad; i++)
+            {
+                int opcion;
+                scanf("%d", &opcion);
+
+                opcion--;
+
+                if (opcion<0 || opcion>=numProductos)
+                {
+                    printf("Opcion no valida");
+                    i--;
+                }
+                else
+                {
+                    opciones[i] = opcion;
+                }
+                
+            }
+
+            // Update the amount of products
+            for (int i = 0; i < cantidad; i++)
+            {
+                
+                int indice = opciones[i];
+                float cantidadAgregar;
+                printf("Ingrese la cantidad a agregar de %s: ", productos[indice].nombre);
+                scanf("%f", &cantidadAgregar);
+
+                productos[indice].cantidad += cantidadAgregar;
+                
+            }
+
+            FILE *archivoEmpleados = fopen("FrutasYVerurasEmpleados.txt", "a+");
+            if (archivoEmpleados == NULL)
+            {
+                perror("Error al abrir o crear FrutasYVerurasEmpleados.txt");
+                free(productos);
+                free(opciones);
+                return;
+            }
+
+            // Save the products
+            for (int i = 0; i < numProductos; i++)
+            {
+                fprintf(archivoEmpleados, "{%s,%.2f,%s},", productos[i].nombre, productos[i].cantidad, empleadoID);
+            }
+
+            fclose(archivoEmpleados);
+            free(productos);
+            free(opciones);
+            break;
+        case 6:
+            //Bebidas Alcoholicas
+            while ((c = fgetc(archivo6)) != EOF)   
+            {
+                if (c == '}')
+                {
+                    numProductos++;
+                }
+            }
+
+            rewind(archivo6);
+
+            struct Producto *productos = (struct Producto *)malloc(numProductos * sizeof(struct Producto));
+            if (productos == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                fclose(archivo6);
+                return;
+            }
+
+            for (int i = 0; i < numProductos; i++)
+            {
+                fscanf(archivo6, "{%[^,],%f},", productos[i].nombre, &productos[i].cantidad);
+            }
+
+            fclose(archivo6);
+
+            mostrarProductosStock(productos, numProductos);
+
+
+            int cantidad;
+            printf("Ingresa la cantidad de productos de la lista que actualizaras\n");
+            scanf("%d", &cantidad);
+
+            if (cantidad<=0 || cantidad > numProductos)
+            {
+                printf("Cantidad no valida.\n");
+                free(productos);
+                return;
+            }
+            
+            int *opciones = (int *)malloc(cantidad * sizeof(int));
+            if (opciones == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                free(productos);
+                return;
+            }
+            
+
+            printf("\nSeleccione las opciones de productos a actualizar en la lista\n:");
+            for (int i = 0; i < cantidad; i++)
+            {
+                int opcion;
+                scanf("%d", &opcion);
+
+                opcion--;
+
+                if (opcion<0 || opcion>=numProductos)
+                {
+                    printf("Opcion no valida");
+                    i--;
+                }
+                else
+                {
+                    opciones[i] = opcion;
+                }
+                
+            }
+
+            // Update the amount of products
+            for (int i = 0; i < cantidad; i++)
+            {
+                
+                int indice = opciones[i];
+                float cantidadAgregar;
+                printf("Ingrese la cantidad a agregar de %s: ", productos[indice].nombre);
+                scanf("%f", &cantidadAgregar);
+
+                productos[indice].cantidad += cantidadAgregar;
+                
+            }
+
+            FILE *archivoEmpleados = fopen("BebidasAlcoholicasEmpleados.txt", "a+");
+            if (archivoEmpleados == NULL)
+            {
+                perror("Error al abrir o crear BebidasAlcoholicasEmpleados.txt");
+                free(productos);
+                free(opciones);
+                return;
+            }
+
+            // Save the products
+            for (int i = 0; i < numProductos; i++)
+            {
+                fprintf(archivoEmpleados, "{%s,%.2f,%s},", productos[i].nombre, productos[i].cantidad, empleadoID);
+            }
+
+            fclose(archivoEmpleados);
+            free(productos);
+            free(opciones);
+            break;
+        
+        case 7: 
+            //HigienePersonal
+            while ((c = fgetc(archivo7)) != EOF)   
+            {
+                if (c == '}')
+                {
+                    numProductos++;
+                }
+            }
+
+            rewind(archivo7);
+
+            struct Producto *productos = (struct Producto *)malloc(numProductos * sizeof(struct Producto));
+            if (productos == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                fclose(archivo7);
+                return;
+            }
+
+            for (int i = 0; i < numProductos; i++)
+            {
+                fscanf(archivo7, "{%[^,],%f},", productos[i].nombre, &productos[i].cantidad);
+            }
+
+            fclose(archivo7);
+
+            mostrarProductosStock(productos, numProductos);
+
+
+            int cantidad;
+            printf("Ingresa la cantidad de productos de la lista que actualizaras\n");
+            scanf("%d", &cantidad);
+
+            if (cantidad<=0 || cantidad > numProductos)
+            {
+                printf("Cantidad no valida.\n");
+                free(productos);
+                return;
+            }
+            
+            int *opciones = (int *)malloc(cantidad * sizeof(int));
+            if (opciones == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                free(productos);
+                return;
+            }
+            
+
+            printf("\nSeleccione las opciones de productos a actualizar en la lista\n:");
+            for (int i = 0; i < cantidad; i++)
+            {
+                int opcion;
+                scanf("%d", &opcion);
+
+                opcion--;
+
+                if (opcion<0 || opcion>=numProductos)
+                {
+                    printf("Opcion no valida");
+                    i--;
+                }
+                else
+                {
+                    opciones[i] = opcion;
+                }
+                
+            }
+
+            // Update the amount of products
+            for (int i = 0; i < cantidad; i++)
+            {
+                
+                int indice = opciones[i];
+                float cantidadAgregar;
+                printf("Ingrese la cantidad a agregar de %s: ", productos[indice].nombre);
+                scanf("%f", &cantidadAgregar);
+
+                productos[indice].cantidad += cantidadAgregar;
+                
+            }
+
+            FILE *archivoEmpleados = fopen("HigienePersonalEmpleados.txt", "a+");
+            if (archivoEmpleados == NULL)
+            {
+                perror("Error al abrir o crear HigienePersonalEmpleados.txt");
+                free(productos);
+                free(opciones);
+                return;
+            }
+
+            // Save the products
+            for (int i = 0; i < numProductos; i++)
+            {
+                fprintf(archivoEmpleados, "{%s,%.2f,%s},", productos[i].nombre, productos[i].cantidad, empleadoID);
+            }
+
+            fclose(archivoEmpleados);
+            free(productos);
+            free(opciones);
+            break;
+        case 8:
+            //Limpieza
+            while ((c = fgetc(archivo8)) != EOF)   
+            {
+                if (c == '}')
+                {
+                    numProductos++;
+                }
+            }
+
+            rewind(archivo8);
+
+            struct Producto *productos = (struct Producto *)malloc(numProductos * sizeof(struct Producto));
+            if (productos == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                fclose(archivo8);
+                return;
+            }
+
+            for (int i = 0; i < numProductos; i++)
+            {
+                fscanf(archivo8, "{%[^,],%f},", productos[i].nombre, &productos[i].cantidad);
+            }
+
+            fclose(archivo8);
+
+            mostrarProductosStock(productos, numProductos);
+
+
+            int cantidad;
+            printf("Ingresa la cantidad de productos de la lista que actualizaras\n");
+            scanf("%d", &cantidad);
+
+            if (cantidad<=0 || cantidad > numProductos)
+            {
+                printf("Cantidad no valida.\n");
+                free(productos);
+                return;
+            }
+            
+            int *opciones = (int *)malloc(cantidad * sizeof(int));
+            if (opciones == NULL)
+            {
+                perror("Error al asignar memoria\n");
+                free(productos);
+                return;
+            }
+            
+
+            printf("\nSeleccione las opciones de productos a actualizar en la lista\n:");
+            for (int i = 0; i < cantidad; i++)
+            {
+                int opcion;
+                scanf("%d", &opcion);
+
+                opcion--;
+
+                if (opcion<0 || opcion>=numProductos)
+                {
+                    printf("Opcion no valida");
+                    i--;
+                }
+                else
+                {
+                    opciones[i] = opcion;
+                }
+                
+            }
+
+            // Update the amount of products
+            for (int i = 0; i < cantidad; i++)
+            {
+                
+                int indice = opciones[i];
+                float cantidadAgregar;
+                printf("Ingrese la cantidad a agregar de %s: ", productos[indice].nombre);
+                scanf("%f", &cantidadAgregar);
+
+                productos[indice].cantidad += cantidadAgregar;
+                
+            }
+
+            FILE *archivoEmpleados = fopen("HigienePersonalEmpleados.txt", "a+");
+            if (archivoEmpleados == NULL)
+            {
+                perror("Error al abrir o crear HigienePersonalEmpleados.txt");
+                free(productos);
+                free(opciones);
+                return;
+            }
+
+            // Save the products
+            for (int i = 0; i < numProductos; i++)
+            {
+                fprintf(archivoEmpleados, "{%s,%.2f,%s},", productos[i].nombre, productos[i].cantidad, empleadoID);
+            }
+
+            fclose(archivoEmpleados);
+            free(productos);
+            free(opciones);
+            break;
+
 
         default:
             break;
