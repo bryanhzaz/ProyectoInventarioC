@@ -92,7 +92,7 @@ int main()
         break;
     case 4:
         //Function to generate inventory reports is developed
-        printf("Agregar funcion de generador de reportes de inventario");
+        generarInformes();
         break;
     case 5:
         printf("Saliendo del programa");
@@ -2806,8 +2806,102 @@ void mostrarProductosStock(struct Producto *productos, int numProductosStock)
 //
 void generarInformes()
 {
+    int menuInformes;
+    int menuOpcion1;
+    printf("\nPuedes generar los siguientes informes de la ultima semana\n");
+    printf("1. Ingresados al principio\n");
+    printf("2. Actualizados de stock (unidades agregadas)\n");
+    printf("3. Actualizados de stock (unidades quitadas)\n");
+    printf("4. Total\n");
+    printf("\n5. SALIR \n:");
+    scanf("%d", &menuInformes);
+
+    switch (menuInformes)
+    {
+    case 1:
+        printf("Elige para cual departamento quieres tu informe\n");
+        printf("1. Abarrotes\n");
+        printf("2. Enlatados\n");
+        printf("3. Lacteos\n");
+        printf("4. Botanas\n");
+        printf("5. Frutas y verduras \n");
+        printf("6. Bebidas Alcoholicas\n");
+        printf("7. Higiene\n");
+        printf("8. Limpieza\n");
+        printf("\n 9. Salir \n:");
+        scanf("%d",&menuOpcion1);
+        switch (menuOpcion1)
+        {
+        case 1:
+            generarinformeInicial("Abarrotes.txt");
+            break;
+        case 2:
+            generarinformeInicial("Enlatados.txt");
+            break;
+        case 3:
+            generarinformeInicial("Lacteos.txt");
+            break;
+        case 4:
+            generarinformeInicial("Botanas.txt");
+            break;
+        case 5:
+            generarinformeInicial("FrutasYVeruras.txt");
+            break;
+        case 6:
+            generarinformeInicial("BebidasAlcoholicas.txt");
+            break;
+        case 7:
+            generarinformeInicial("HigienePersonal.txt");
+            break;
+        case 8:
+            generarinformeInicial("Limpieza.txt");
+            break;
+        case 9:
+            return;
+        default:
+            break;
+        }
+        break;
+    case 5:
+        return;
     
+    default:
+        break;
+    }
+
+
 }
 
+void imprimirGrafica(float cantidad)
+{
+    printf(" ||");
+    for (int i = 0; i < (int)cantidad; i++)
+    {
+        printf("|");
+    }
+    printf("\n");
+}
+
+void generarinformeInicial (const char *nombrearchivo)
+{
+    FILE *archivo = fopen(nombrearchivo, "r");
+    if (archivo == NULL)
+    {
+        perror("Error al abrir el archivo");
+    }
+
+    printf("Reporte inicial de semana para %s\n",nombrearchivo);
+
+    struct Producto producto;
+
+    while (fscanf(archivo, "{%[^,],%f},", producto.nombre, &producto.cantidad) == 2)
+    {
+        printf("Producto : %s || Cantidad en unidades o KG: %.2f\n", producto.nombre,producto.cantidad);
+        printf("Grafica de barras de %s\n", producto.nombre);
+        imprimirGrafica(producto.cantidad);
+    }
+    
+    fclose(archivo);
+}
 
 
