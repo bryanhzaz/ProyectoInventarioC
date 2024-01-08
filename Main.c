@@ -56,6 +56,10 @@ struct Empleado
 };
 
 
+/*Function to generate a report of the last week of inventory*/
+void generarInformes();
+
+
 //Main:
 int main()
 {
@@ -871,7 +875,7 @@ void eliminarProductos(char *nombrearchivo)
     fclose(seguridadAdmin);
 
 }
-
+//Update the stock of inventory per week by each user without the admin (is ready)
 void actualizarStock()
 {
     int menuStock;
@@ -2788,7 +2792,7 @@ void actualizarStock()
     }
 }
 
-
+//Function to show the products and can update the stock
 void mostrarProductosStock(struct Producto *productos, int numProductosStock)
 {
     printf("\nLista de productos\n");
@@ -2798,6 +2802,12 @@ void mostrarProductosStock(struct Producto *productos, int numProductosStock)
     }
 }
 
+
+//
+void generarInformes()
+{
+    
+}
 
 
 
