@@ -877,9 +877,12 @@ void actualizarStock()
     int menuStock;
     int menuArea;
     printf("\nElige la opción de actualizacion\n");
+    printf("Borrar el historial de stock cada semana o después de generar un reporte de inventario\n");
     printf("1. Agregar unidades\n");
-    printf("2. Descartar unidades");
-    printf("\nSalir\n:");
+    printf("2. Descartar unidades\n");
+    printf("3. Borrar historial de productos agregados\n");
+    printf("4. Borrar historial de productos quitados\n");
+    printf("\n5. Salir\n:");
     scanf("%d", &menuStock);
 
     // Validate the ID with password
@@ -1007,6 +1010,9 @@ void actualizarStock()
     // To count products
     int numProductos = 0;
     char c;
+
+    //To validate admin
+    char validarContraseña[50];
 
     switch (menuStock)
     {
@@ -2694,7 +2700,87 @@ void actualizarStock()
 
         break;
     case 3:
+        printf("\nPara poder eliminar historial, por favor ingrese la contraseña de admin\n");
+        scanf("%s", validarContraseña);
+        FILE *eliminarIncrementoStock = fopen("Administrador.txt", "r+");
+        if (eliminarIncrementoStock == NULL)
+        {
+            perror("Error al abrir Administrador.txt para agregar productos");
+        }
+        char usuario[50],contraseña[50];
+        fscanf(eliminarIncrementoStock, "%s %s",usuario,contraseña);
 
+        //Add products after of password admin validation
+        if (strcmp(validarContraseña, contraseña) == 0)
+        {   
+            printf("¿Estás seguro de que desea borrar el historial (se eliminara todo)\n?");
+            printf("1. Si\n");
+            printf("2. No\n:");
+            int respuesta;
+            scanf("%d", &respuesta);
+            if (respuesta == 1)
+            {
+                remove("AbarrotesEmpleados.txt");
+                remove("EnlatadosEmpleados.txt");
+                remove("LacteosEmpleados.txt");
+                remove("BotanasEmpleados.txt");
+                remove("FrutasYVerurasEmpleados.txt");
+                remove("BebidasAlcoholicasEmpleados.txt");
+                remove("HigienePersonalEmpleados.txt");
+                remove("LimpiezaEmpleados.txt");
+                printf("Historial eliminado exitosamente\n");
+            }
+            else
+            {
+                printf("No se elimino nada\n");
+                return;
+            }
+            fclose(eliminarIncrementoStock);
+            
+        }
+        break;
+    case 4:
+        printf("\nPara poder eliminar historial, por favor ingrese la contraseña de admin\n");
+        scanf("%s", validarContraseña);
+        FILE *eliminarDecrementoStock = fopen("Administrador.txt", "r+");
+        if (eliminarDecrementoStock == NULL)
+        {
+            perror("Error al abrir Administrador.txt para agregar productos");
+        }
+        char usuario2[50],contraseña2[50];
+        fscanf(eliminarDecrementoStock, "%s %s",usuario2,contraseña2);
+
+        //Add products after of password admin validation
+        if (strcmp(validarContraseña, contraseña2) == 0)
+        {   
+            printf("¿Estás seguro de que desea borrar el historial (se eliminara todo)\n?");
+            printf("1. Si\n");
+            printf("2. No\n:");
+            int respuesta2;
+            scanf("%d", &respuesta2);
+            if (respuesta2 == 1)
+            {
+                remove("AbarrotesEmpleadosN.txt");
+                remove("EnlatadosEmpleadosN.txt");
+                remove("LacteosEmpleadosN.txt");
+                remove("BotanasEmpleadosN.txt");
+                remove("FrutasYVerurasEmpleadosN.txt");
+                remove("BebidasAlcoholicasEmpleadosN.txt");
+                remove("HigienePersonalEmpleadosN.txt");
+                remove("LimpiezaEmpleadosN.txt");
+                printf("Historial eliminado exitosamente\n");
+            }
+            else
+            {
+                printf("No se elimino nada\n");
+                return;
+            }
+            fclose(eliminarDecrementoStock);
+            
+        }
+
+        break;
+    case 5:
         return;
 
     default:
