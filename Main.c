@@ -66,6 +66,13 @@ struct Producto2
     char id[5];
 };
 
+struct Producto3
+{
+    char nombre[100]; // Ajusta el tamaño según tus necesidades
+    float cantidad;
+    char id[5]; // Ajusta el tamaño según tus necesidades
+};
+
 //Main:
 int main()
 {
@@ -2820,8 +2827,7 @@ void generarInformes()
     printf("1. Ingresados al principio\n");
     printf("2. Actualizados de stock (unidades agregadas)\n");
     printf("3. Actualizados de stock (unidades quitadas)\n");
-    printf("4. Total\n");
-    printf("\n5. SALIR \n:");
+    printf("\n4. SALIR \n:");
     scanf("%d", &menuInformes);
 
     switch (menuInformes)
@@ -3104,4 +3110,6 @@ void generarInformeStockQuitado(const char *nombreArchivo)
         imprimirGrafica(productosTotales[i].cantidad);
     }
 }
+
+
 
