@@ -59,6 +59,12 @@ struct Empleado
 /*Function to generate a report of the last week of inventory*/
 void generarInformes();
 
+struct Producto2
+{
+    char nombre[50];
+    float cantidad;
+    char id[5];
+};
 
 //Main:
 int main()
@@ -2808,6 +2814,8 @@ void generarInformes()
 {
     int menuInformes;
     int menuOpcion1;
+    int menuOpcion2;
+    int menuOpcion3;
     printf("\nPuedes generar los siguientes informes de la ultima semana\n");
     printf("1. Ingresados al principio\n");
     printf("2. Actualizados de stock (unidades agregadas)\n");
@@ -2862,7 +2870,98 @@ void generarInformes()
             break;
         }
         break;
-    case 5:
+    case 2:
+        printf("Elige para cual departamento quieres tu informe\n");
+        printf("1. Abarrotes\n");
+        printf("2. Enlatados\n");
+        printf("3. Lacteos\n");
+        printf("4. Botanas\n");
+        printf("5. Frutas y verduras \n");
+        printf("6. Bebidas Alcoholicas\n");
+        printf("7. Higiene\n");
+        printf("8. Limpieza\n");
+        printf("\n 9. Salir \n:");
+        scanf("%d",&menuOpcion2);
+        switch (menuOpcion2)
+        {
+        case 1:
+            generarInformeStockAgregado("AbarrotesEmpleados.txt");
+            break;
+        case 2:
+            generarInformeStockAgregado("EnlatadosEmpleados.txt");
+            break;
+        case 3:
+            generarInformeStockAgregado("LacteosEmpleados.txt");
+            break;
+        case 4:
+            generarInformeStockAgregado("BotanasEmpleados.txt");
+            break;
+        case 5:
+            generarInformeStockAgregado("FrutasYVerurasEmpleados.txt");
+            break;
+        case 6:
+            generarInformeStockAgregado("BebidasAlcoholicasEmpleados.txt");
+            break;
+        case 7:
+            generarInformeStockAgregado("HigienePersonalEmpleados.txt");
+            break;
+        case 8:
+            generarInformeStockAgregado("LimpiezaEmpleados.txt");
+            break;
+        case 9:
+            return;
+        
+        default:
+            break;
+        }
+        break;
+    case 3:
+        printf("Elige para cual departamento quieres tu informe\n");
+        printf("1. Abarrotes\n");
+        printf("2. Enlatados\n");
+        printf("3. Lacteos\n");
+        printf("4. Botanas\n");
+        printf("5. Frutas y verduras \n");
+        printf("6. Bebidas Alcoholicas\n");
+        printf("7. Higiene\n");
+        printf("8. Limpieza\n");
+        printf("\n 9. Salir \n:");
+        scanf("%d",&menuOpcion3);
+        switch (menuOpcion3)
+        {
+        case 1:
+            generarInformeStockQuitado("AbarrotesEmpleadosN.txt");
+            break;
+        case 2:
+            generarInformeStockQuitado("EnlatadosEmpleadosN.txt");
+            break;
+        case 3:
+            generarInformeStockQuitado("LacteosEmpleadosN.txt");
+            break;
+        case 4:
+            generarInformeStockQuitado("BotanasEmpleadosN.txt");
+            break;
+        case 5:
+            generarInformeStockQuitado("FrutasYVerurasEmpleadosN.txt");
+            break;
+        case 6:
+            generarInformeStockQuitado("BebidasAlcoholicasEmpleadosN.txt");
+            break;
+        case 7:
+            generarInformeStockQuitado("HigienePersonalEmpleadosN.txt");
+            break;
+        case 8:
+            generarInformeStockQuitado("LimpiezaEmpleadosN.txt");
+            break;
+        case 9:
+            return;
+        
+        default:
+            break;
+        }
+        break;
+
+    case 4:
         return;
     
     default:
@@ -2904,4 +3003,105 @@ void generarinformeInicial (const char *nombrearchivo)
     fclose(archivo);
 }
 
+void generarInformeStockAgregado(const char *nombreArchivo)
+{
+    FILE *archivo = fopen(nombreArchivo, "r");
+    if (!archivo)
+    {
+        perror("Error al abrir el archivo");
+        return;
+    }
+
+    printf("Reporte final de semana de productos agregados para %s\n", nombreArchivo);
+
+    struct Producto2 producto;
+    struct Producto2 productosTotales[100];
+
+    int numProductosTotales = 0;
+
+    while (fscanf(archivo, "{%[^,],%f,%[^}]},", producto.nombre, &producto.cantidad, producto.id) == 3)
+    {
+        int productoEncontrado = 0;
+
+        for (int i = 0; i < numProductosTotales; i++)
+        {
+            if (strcmp(productosTotales[i].id, producto.id) == 0 &&
+                strcmp(productosTotales[i].nombre, producto.nombre) == 0)
+            {
+                productosTotales[i].cantidad += producto.cantidad;
+                productoEncontrado = 1;
+                break;
+            }
+        }
+
+        if (!productoEncontrado)
+        {
+            strcpy(productosTotales[numProductosTotales].nombre, producto.nombre);
+            productosTotales[numProductosTotales].cantidad = producto.cantidad;
+            strcpy(productosTotales[numProductosTotales].id, producto.id);
+            numProductosTotales++;
+        }
+    }
+
+    fclose(archivo);
+
+    for (int i = 0; i < numProductosTotales; i++)
+    {
+        printf("El ID %s:\n", productosTotales[i].id);
+        printf("Producto: %s || Cantidad en unidades o KG: %.2f\n", productosTotales[i].nombre, productosTotales[i].cantidad);
+        printf("Grafica de barras de %s\n", productosTotales[i].nombre);
+        imprimirGrafica(productosTotales[i].cantidad);
+    }
+}
+
+void generarInformeStockQuitado(const char *nombreArchivo)
+{
+    FILE *archivo = fopen(nombreArchivo, "r");
+    if (!archivo)
+    {
+        perror("Error al abrir el archivo");
+        return;
+    }
+
+    printf("Reporte final de semana de productos quitados para %s\n", nombreArchivo);
+
+    struct Producto2 producto;
+    struct Producto2 productosTotales[100];
+
+    int numProductosTotales = 0;
+
+    while (fscanf(archivo, "{%[^,],%f,%[^}]},", producto.nombre, &producto.cantidad, producto.id) == 3)
+    {
+        int productoEncontrado = 0;
+
+        for (int i = 0; i < numProductosTotales; i++)
+        {
+            if (strcmp(productosTotales[i].id, producto.id) == 0 &&
+                strcmp(productosTotales[i].nombre, producto.nombre) == 0)
+            {
+                productosTotales[i].cantidad += producto.cantidad;
+                productoEncontrado = 1;
+                break;
+            }
+        }
+
+        if (!productoEncontrado)
+        {
+            strcpy(productosTotales[numProductosTotales].nombre, producto.nombre);
+            productosTotales[numProductosTotales].cantidad = producto.cantidad;
+            strcpy(productosTotales[numProductosTotales].id, producto.id);
+            numProductosTotales++;
+        }
+    }
+
+    fclose(archivo);
+
+    for (int i = 0; i < numProductosTotales; i++)
+    {
+        printf("El ID %s:\n", productosTotales[i].id);
+        printf("Producto: %s || Cantidad en unidades o KG: %.2f\n", productosTotales[i].nombre, productosTotales[i].cantidad);
+        printf("Grafica de barras de %s\n", productosTotales[i].nombre);
+        imprimirGrafica(productosTotales[i].cantidad);
+    }
+}
 
